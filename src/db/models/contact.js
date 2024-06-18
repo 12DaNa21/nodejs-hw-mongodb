@@ -12,7 +12,6 @@ const contactsSchema = new Schema(
     },
     email: {
       type: String,
-      match: [/.+\@.+\..+/, 'Please fill a valid email address'],
       required: false,
     },
     isFavourite: {
@@ -34,4 +33,4 @@ const contactsSchema = new Schema(
   },
 );
 
-export const ContactsCollection = model('Contact', contactsSchema);
+export const ContactsCollection = model('contacts', contactsSchema);
