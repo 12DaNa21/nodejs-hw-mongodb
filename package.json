@@ -2,12 +2,13 @@
   "name": "nodejs-basics",
   "version": "1.0.0",
   "description": "",
-  "type":"module",
+  "type": "module",
   "main": "src/index.js",
   "scripts": {
     "lint": "eslint src/**/*.js",
     "start": "node ./src/index.js",
-    "dev": "nodemon src/index.js"
+    "dev": "nodemon src/index.js",
+    "build": "echo 'No build step defined'"
   },
   "keywords": [],
   "author": "Dana_Popovych <bogdana403@gmail.com>",
