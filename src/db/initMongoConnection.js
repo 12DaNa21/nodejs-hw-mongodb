@@ -13,13 +13,16 @@ export const initMongoConnection = async () => {
       {
         useNewUrlParser: true,
         useUnifiedTopology: true,
-        
+
       }
     );
 
     console.log('Mongo connection successfully established!');
   } catch (e) {
     console.error('Error while setting up mongo connection', e);
-    throw e;
+   throw e;
   }
 };
+
+mongoose.set('strictQuery', true);
+initMongoConnection();

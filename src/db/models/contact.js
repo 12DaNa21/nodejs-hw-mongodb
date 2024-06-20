@@ -26,11 +26,10 @@ const contactsSchema = new Schema(
     },
   },
   {
-    timestamps: {
-      createdAt: 'createdAt',
-      updatedAt: 'updatedAt',
-    },
+    timestamps: true,
+    versionKey: false,
   },
+  
 );
 
 export const ContactsCollection = model('contacts', contactsSchema);
