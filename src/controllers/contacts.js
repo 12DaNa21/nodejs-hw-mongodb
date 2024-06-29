@@ -63,7 +63,7 @@ export const createContactController = async (req, res) => {
     const result = await updateContact(contactId, req.body);
 
     if (!result) {
-      next(createHttpError(404, 'Rout not found'));
+      next(createHttpError(404, 'Contact not found'));
       return;
     }
 
