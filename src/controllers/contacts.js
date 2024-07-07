@@ -9,6 +9,8 @@ export const getContactsController = async (req, res, next) => {
     const { page, perPage } = parsePaginationParams(req.query);
     const { sortBy, sortOrder } = parseSortParams(req.query);
 
+    console.log('Fetching contacts with params:', { page, perPage, sortBy, sortOrder });
+
     const contacts = await getAllContacts({
       page,
       perPage,
@@ -27,6 +29,7 @@ export const getContactsController = async (req, res, next) => {
       },
     });
   } catch (error) {
+    console.error('Error in getContactsController:', error);
     next(error);
   }
 };
@@ -34,11 +37,15 @@ export const getContactsController = async (req, res, next) => {
 export const getContactByIdController = async (req, res, next) => {
   try {
     const { contactId } = req.params;
+    console.log('Fetching contact by ID:', contactId);
+
     const contact = await getContactById(contactId);
 
     if (!contact) {
       return next(createHttpError(404, 'Contact not found'));
     }
+
+    console.log('Found contact:', contact);
 
     res.json({
       status: 200,
@@ -46,12 +53,15 @@ export const getContactByIdController = async (req, res, next) => {
       data: contact,
     });
   } catch (error) {
-    next(error);
+    console.error('Error in getContactByIdController:', error);
+    next(error); 
   }
 };
 
 export const createContactController = async (req, res, next) => {
   try {
+    console.log('Creating contact with data:', req.body);
+
     const contact = await createContact(req.body);
     res.status(201).json({
       status: 201,
@@ -59,6 +69,7 @@ export const createContactController = async (req, res, next) => {
       data: contact,
     });
   } catch (error) {
+    console.error('Error in createContactController:', error);
     next(error);
   }
 };
@@ -66,6 +77,8 @@ export const createContactController = async (req, res, next) => {
 export const deleteContactController = async (req, res, next) => {
   try {
     const { contactId } = req.params;
+    console.log('Deleting contact by ID:', contactId);
+
     const contact = await deleteContact(contactId);
 
     if (!contact) {
@@ -74,6 +87,7 @@ export const deleteContactController = async (req, res, next) => {
 
     res.status(204).send();
   } catch (error) {
+    console.error('Error in deleteContactController:', error);
     next(error);
   }
 };
@@ -81,6 +95,8 @@ export const deleteContactController = async (req, res, next) => {
 export const patchContactController = async (req, res, next) => {
   try {
     const { contactId } = req.params;
+    console.log('Patching contact by ID:', contactId, 'with data:', req.body);
+
     const result = await updateContact(contactId, req.body);
 
     if (!result) {
@@ -93,6 +109,7 @@ export const patchContactController = async (req, res, next) => {
       data: result,
     });
   } catch (error) {
+    console.error('Error in patchContactController:', error);
     next(error);
   }
 };
