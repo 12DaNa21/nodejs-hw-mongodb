@@ -1,4 +1,4 @@
-import { registerUser, loginUser, logoutUser, refreshUsersSession } from '../services/auth.js';
+import { registerUser, loginUser, logoutUser, refreshUsersSession } from '../services/auth-servic.js';
 import { THIRTY_DAYS } from '../constants/index.js';
 
 export const registerUserController = async (req, res, next) => {
@@ -27,7 +27,7 @@ export const loginUserController = async (req, res, next) => {
     });
     res.status(200).json({
       status: 'success',
-      message: 'Successfully logged in an user!',
+      message: 'Successfully logged in a user!',
       data: { accessToken: session.accessToken },
     });
   } catch (error) {

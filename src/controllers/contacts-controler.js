@@ -1,5 +1,5 @@
 import createHttpError from 'http-errors';
-import { createContact, deleteContact, updateContact, getAllContacts, getContactById } from "../services/contacts.js";
+import { createContact, deleteContact, updateContact, getAllContacts, getContactById } from "../services/contacts-servic.js";
 import { parsePaginationParams } from '../utils/parsePaginationParams.js';
 import { calculatePaginationData } from '../utils/calculatePaginationData.js';
 import { parseSortParams } from '../utils/parseSortParams.js';
@@ -54,7 +54,7 @@ export const getContactByIdController = async (req, res, next) => {
     });
   } catch (error) {
     console.error('Error in getContactByIdController:', error);
-    next(error); 
+    next(error);
   }
 };
 
