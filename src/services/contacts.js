@@ -1,4 +1,4 @@
-import { ContactsCollection } from '../db/models/contact-model.js';
+import { ContactsCollection } from '../db/models/contact.js';
 import { calculatePaginationData } from '../utils/calculatePaginationData.js';
 import { SORT_ORDER } from '../index.js';
 
@@ -55,7 +55,7 @@ export const getContactById = async (contactId) => {
     return contact;
   } catch (error) {
     console.error('Error finding contact by ID:', error);
-    throw error;
+    throw error; 
   }
 };
 
