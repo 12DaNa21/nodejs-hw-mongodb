@@ -1,4 +1,4 @@
-import { loginUser, logoutUser, registerUser, refreshUsersSession } from '../services/auth.js';
+import { loginUser, logoutUser, registerUser, refreshUsersSession } from '../services/auth-service.js';
 import { THIRTY_DAYS } from '../constants/index.js';
 
 export const registerUserController = async (req, res) => {
