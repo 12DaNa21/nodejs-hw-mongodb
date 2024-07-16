@@ -1,3 +1,4 @@
+
 import { Router } from 'express';
 import { ctrlWrapper } from '../utils/ctrlWrapper.js';
 import {
@@ -21,3 +22,5 @@ contactsRouter.put('/:contactId', validateBody(createContactSchema), ctrlWrapper
 contactsRouter.patch('/:contactId', validateBody(updateContactSchema), ctrlWrapper(patchContactController));
 
 export default contactsRouter;
+
+

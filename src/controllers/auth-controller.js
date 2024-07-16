@@ -1,4 +1,7 @@
-import { loginUser, logoutUser, registerUser, refreshUsersSession } from '../services/auth-service.js';
+
+
+import { loginUser, logoutUser, registerUser, refreshUsersSession, requestResetToken } from '../services/auth-servis.js';
+
 import { THIRTY_DAYS } from '../constants/index.js';
 
 export const registerUserController = async (req, res) => {
@@ -67,3 +70,25 @@ export const refreshUserSessionController = async (req, res) => {
     },
   });
 };
+
+
+export const requestResetEmailController = async (req, res) => {
+  console.log('Inside requestResetEmailController');
+  try {
+    await requestResetToken(req.body.email);
+    console.log('Email request successful');
+    res.json({
+      message: 'Reset password email was successfully sent!',
+      status: 200,
+      data: {},
+    });
+  } catch (error) {
+    console.error('Error in requestResetEmailController:', error);
+    res.status(500).json({
+      message: 'Internal server error',
+      status: 500,
+      data: {},
+    });
+  }
+};
+
