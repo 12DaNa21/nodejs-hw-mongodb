@@ -1,4 +1,7 @@
+
+
 import { loginUser, logoutUser, registerUser, refreshUsersSession, requestResetToken } from '../services/auth-servis.js';
+
 import { THIRTY_DAYS } from '../constants/index.js';
 
 export const registerUserController = async (req, res) => {
@@ -68,6 +71,7 @@ export const refreshUserSessionController = async (req, res) => {
   });
 };
 
+
 export const requestResetEmailController = async (req, res) => {
   console.log('Inside requestResetEmailController');
   try {
@@ -87,3 +91,4 @@ export const requestResetEmailController = async (req, res) => {
     });
   }
 };
+
