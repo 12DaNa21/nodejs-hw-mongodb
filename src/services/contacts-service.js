@@ -1,103 +1,63 @@
+import { SORT_ORDER } from '../constants/index.js';
 import { ContactsCollection } from '../db/models/contact-model.js';
 import { calculatePaginationData } from '../utils/calculatePaginationData.js';
-import { SORT_ORDER } from '../index.js';
 
-export const getAllContacts = async ({
-  page = 1,
-  perPage = 10,
-  sortOrder = SORT_ORDER.ASC,
-  sortBy = '_id',
-  type,
-  isFavourite,
-}) => {
-  try {
-    const limit = perPage;
-    const skip = (page - 1) * perPage;
+export const getAllContacts = async ({page = 1, perPage = 10, sortOrder = SORT_ORDER.ASC, sortBy = '_id', filter = {}}) => {
+  const limit = perPage;
+  const skip = (page - 1) * perPage;
 
-    let contactsQuery = ContactsCollection.find();
+  const contactsQuery = ContactsCollection.find({ userId: filter.userId }); 
 
-    if (type) {
-      contactsQuery = contactsQuery.where('contactType').equals(type);
-    }
-    if (isFavourite !== undefined) {
-      contactsQuery = contactsQuery.where('isFavourite').equals(isFavourite);
-    }
-
-    const contactsCount = await contactsQuery.clone().countDocuments();
-    const contacts = await contactsQuery
-      .skip(skip)
-      .limit(limit)
-      .sort({ [sortBy]: sortOrder })
-      .exec();
-
-    const paginationData = calculatePaginationData(contactsCount, perPage, page);
-
-    console.log('Contacts fetched successfully:', contacts);
-
-    return {
-      data: contacts,
-      ...paginationData,
-    };
-  } catch (error) {
-    console.error('Error fetching contacts:', error);
-    throw error;
+  if (filter.type) {
+    contactsQuery.where('contactType').equals(filter.type);
   }
+  if (filter.isFavourite !== undefined) {
+    contactsQuery.where('isFavourite').equals(filter.isFavourite);
+  }
+
+  const contactsCount = await ContactsCollection.find(filter).merge(contactsQuery).countDocuments();
+  const contacts = await contactsQuery.skip(skip).limit(limit).sort({[sortBy]: sortOrder}).exec();
+  const paginationData = calculatePaginationData(contactsCount, perPage, page);
+
+  return {
+    data: contacts,
+    ...paginationData,
+  };
 };
 
-export const getContactById = async (contactId) => {
-  try {
-    console.log('Trying to find contact by ID:', contactId);
-
-    const contact = await ContactsCollection.findById(contactId);
-
-    console.log('Found contact:', contact);
-
-    return contact;
-  } catch (error) {
-    console.error('Error finding contact by ID:', error);
-    throw error;
-  }
+export const getContactById = async (contactId, userId) => {
+  const contact = await ContactsCollection.findOne({ _id: contactId, userId });
+  return contact;
 };
 
 export const createContact = async (payload) => {
-  try {
-    const contact = await ContactsCollection.create(payload);
-    return contact;
-  } catch (error) {
-    console.error('Error creating contact:', error);
-    throw error;
-  }
+  const contact = await ContactsCollection.create(payload);
+  return contact;
 };
 
-export const deleteContact = async (contactId) => {
-  try {
-    const contact = await ContactsCollection.findOneAndDelete({ _id: contactId });
-    return contact;
-  } catch (error) {
-    console.error('Error deleting contact:', error);
-    throw error;
-  }
+export const deleteContact = async (contactId, userId) => {
+  const contact = await ContactsCollection.findOneAndDelete({
+    _id: contactId,
+    userId,
+  });
+  return contact;
 };
 
 export const updateContact = async (contactId, payload, options = {}) => {
-  try {
-    const rawResult = await ContactsCollection.findOneAndUpdate(
-      { _id: contactId },
-      payload,
-      {
-        new: true,
-        includeResultMetadata: true,
-        ...options,
-      }
-    );
+  const rawResult = await ContactsCollection.findOneAndUpdate(
+    { _id: contactId, userId: payload.userId },
+    payload,
+    {
+      new: true,
+      includeResultMetadata: true,
+      ...options,
+    },
+  );
 
-    if (!rawResult) return null;
+  if (!rawResult || !rawResult.value) return null;
 
-    return {
-      contact: rawResult,
-    };
-  } catch (error) {
-    console.error('Error updating contact:', error);
-    throw error;
-  }
+  return {
+    contact: rawResult.value,
+    isNew: Boolean(rawResult?.lastErrorObject?.upserted),
+  };
 };
