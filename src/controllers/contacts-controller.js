@@ -5,7 +5,7 @@ import {
   getAllContacts,
   getContactById,
   updateContact,
-} from '../services/contacts-servis.js';
+} from '../services/contacts.js';
 import { parsePaginationParams } from '../utils/parsePaginationParams.js';
 import { parseSortParams } from '../utils/parseSortParams.js';
 import { parseContactFilterParams } from '../utils/parseContactFilterParams.js';
