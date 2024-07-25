@@ -64,20 +64,19 @@ export const getContactByIdController = async (req, res, next) => {
   }
 };
 
-export const createContactController = async (req, res, next) => {
-  try {
-    console.log('Creating contact with data:', req.body);
+export const createContactController = async (req, res) => {
+  const payload = {
+    ...req.body,
+    userId: req.user._id,
+  };
 
-    const contact = await createContact(req.body);
-    res.status(201).json({
-      status: 201,
-      message: 'Successfully created a contact!',
-      data: contact,
-    });
-  } catch (error) {
-    console.error('Error in createContactController:', error);
-    next(error);
-  }
+  const student = await createContact(payload);
+
+  res.status(201).json({
+    status: 201,
+    message: `Successfully created a contact!`,
+    data: student,
+  });
 };
 
 export const deleteContactController = async (req, res, next) => {
@@ -137,7 +136,7 @@ export const patchContactController = async (req, res, next) => {
     res.json({
       status: 200,
       message: 'Successfully patched a contact!',
-      data: result,
+      data: result.contact,
     });
   } catch (error) {
     console.error('Error in patchContactController:', error);
