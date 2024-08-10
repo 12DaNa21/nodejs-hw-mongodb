@@ -24,17 +24,10 @@ const contactsSchema = new Schema(
       required: true,
       default: 'personal',
     },
-    userId: {
-      type: Schema.Types.ObjectId,
-      ref: 'User',
-      required: true,
-    },
   },
+  
   {
-    timestamps: {
-      createdAt: 'createdAt',
-      updatedAt: 'updatedAt',
-    },
+    timestamps: true,
     versionKey: false,
   }
 );
