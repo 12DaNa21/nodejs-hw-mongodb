@@ -22,7 +22,7 @@ export const getAllContacts = async ({ page = 1, perPage = 10, sortOrder = SORT_
 
   const contacts = await contactsQuery.skip(skip).limit(limit).sort({ [sortBy]: sortOrder }).exec();
 
-  
+
   const paginationData = calculatePaginationData(contactsCount, perPage, page);
 
   return {
@@ -57,7 +57,8 @@ export const deleteContact  = async (contactId, userId) => {
 export const updateContact = async (contactId, payload, options = {}) => {
   try {
     const rawResult = await ContactsCollection.findOneAndUpdate(
-      { _id: contactId },
+      { _id: contactId, userId: payload.userId },
+
       payload,
       {
         new: true,
@@ -76,3 +77,4 @@ export const updateContact = async (contactId, payload, options = {}) => {
     throw error;
   }
 };
+
