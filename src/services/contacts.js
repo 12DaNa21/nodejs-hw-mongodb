@@ -37,13 +37,8 @@ export const getContactById = async (contactId, userId) => {
 };
 
 export const createContact = async (payload) => {
-  try {
-    const contact = await ContactsCollection.create(payload);
-    return contact;
-  } catch (error) {
-    console.error('Error creating contact:', error);
-    throw error;
-  }
+  const contact = await ContactsCollection.create(payload);
+  return contact;
 };
 
 export const deleteContact  = async (contactId, userId) => {
@@ -54,11 +49,11 @@ export const deleteContact  = async (contactId, userId) => {
   return contact;
 };
 
-export const updateContact = async (contactId, payload, options = {}) => {
+export const updateContact = async (contactId, payload, userId, options = {}) => {
   try {
-    const rawResult = await ContactsCollection.findOneAndUpdate(
-      { _id: contactId, userId: payload.userId },
 
+    const rawResult = await ContactsCollection.findOneAndUpdate(
+      { _id: contactId, userId: userId },  
       payload,
       {
         new: true,
@@ -67,7 +62,10 @@ export const updateContact = async (contactId, payload, options = {}) => {
       }
     );
 
-    if (!rawResult) return null;
+    if (!rawResult) {
+      console.log('Contact not found');
+      return null;
+    }
 
     return {
       contact: rawResult,
@@ -77,4 +75,3 @@ export const updateContact = async (contactId, payload, options = {}) => {
     throw error;
   }
 };
-
