@@ -4,7 +4,9 @@ import { parsePaginationParams } from '../utils/parsePaginationParams.js';
 
 import { parseContactFilterParams } from '../utils/parseContactFilterParams.js';
 import { parseSortParams } from '../utils/parseSortParams.js';
-
+import { saveFileToUploadDir } from '../utils/saveFileToUploadDir.js';
+import { saveFileToCloudinary } from '../utils/saveFileToCloudinary.js';
+import { env } from '../utils/env.js';
 export const getContactsController = async (req, res) => {
   const { page, perPage } = parsePaginationParams(req.query);
 
@@ -80,23 +82,56 @@ export const deleteContactController = async (req, res, next) => {
 
 export const patchContactController = async (req, res, next) => {
   const { contactId } = req.params;
-  const payload = { ...req.body };
-  const userId = req.user._id;  
+  const photo = req.file;
+  const userId = req.user._id;
+
+  console.log('Received file:', photo);
+
+  let photoUrl;
+
+  if (photo) {
+    if (env('ENABLE_CLOUDINARY') === 'true') {
+      try {
+        photoUrl = await saveFileToCloudinary(photo);
+        console.log('File saved to Cloudinary:', photoUrl);
+      } catch (error) {
+        console.error('Error saving file to Cloudinary:', error);
+        return next(createHttpError(500, 'Error saving file to Cloudinary'));
+      }
+    } else {
+      try {
+        photoUrl = await saveFileToUploadDir(photo);
+        console.log('File saved to upload directory:', photoUrl);
+      } catch (error) {
+        console.error('Error saving file to upload directory:', error);
+        return next(createHttpError(500, 'Error saving file to upload directory'));
+      }
+    }
+  } else {
+    console.log('No file received.');
+  }
+
+  const payload = {
+    ...req.body,
+    ...(photoUrl && { photo: photoUrl }),
+  };
+
+  console.log('Payload for update:', payload);
 
   try {
     const result = await updateContact(contactId, payload, userId);
 
     if (!result) {
-      next(createHttpError(404, 'Contact not found'));
-      return;
+      return next(createHttpError(404, 'Contact not found'));
     }
 
     res.json({
       status: 200,
-      message: `Successfully patched a contact!`,
+      message: 'Successfully patched a contact!',
       data: result.contact,
     });
   } catch (error) {
+    console.error('Error in patchContactController:', error);
     next(createHttpError(500, 'Internal Server Error'));
   }
 };
