@@ -51,9 +51,8 @@ export const deleteContact  = async (contactId, userId) => {
 
 export const updateContact = async (contactId, payload, userId, options = {}) => {
   try {
-
     const rawResult = await ContactsCollection.findOneAndUpdate(
-      { _id: contactId, userId: userId },  
+      { _id: contactId, userId: userId },
       payload,
       {
         new: true,
@@ -63,7 +62,7 @@ export const updateContact = async (contactId, payload, userId, options = {}) =>
     );
 
     if (!rawResult) {
-      console.log('Contact not found');
+      console.log(`Contact with ID ${contactId} not found for user ${userId}`);
       return null;
     }
 
