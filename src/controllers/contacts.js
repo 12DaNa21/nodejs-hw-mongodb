@@ -47,19 +47,56 @@ export const getContactByIdController = async (req, res, next) => {
   });
 };
 
-export const createContactController = async (req, res) => {
+export const createContactController = async (req, res, next) => {
+  const photo = req.file;  
+  const userId = req.user._id;
+
+  console.log('Received file:', photo);
+
+  let photoUrl;
+
+  if (photo) {
+    if (env('ENABLE_CLOUDINARY') === 'true') {
+      try {
+        photoUrl = await saveFileToCloudinary(photo);
+        console.log('File saved to Cloudinary:', photoUrl);
+      } catch (error) {
+        console.error('Error saving file to Cloudinary:', error);
+        return next(createHttpError(500, 'Error saving file to Cloudinary'));
+      }
+    } else {
+      try {
+        photoUrl = await saveFileToUploadDir(photo);
+        console.log('File saved to upload directory:', photoUrl);
+      } catch (error) {
+        console.error('Error saving file to upload directory:', error);
+        return next(createHttpError(500, 'Error saving file to upload directory'));
+      }
+    }
+  } else {
+    console.log('No file received.');
+  }
+
   const payload = {
     ...req.body,
     userId: req.user._id,
+    ...(photoUrl && { photo: photoUrl }),
   };
 
-  const contact = await createContact(payload);
+  console.log('Payload for creation:', payload);
 
-  res.status(201).json({
-    status: 201,
-    message: `Successfully created a contact!`,
-    data: contact,
-  });
+  try {
+    const contact = await createContact(payload);
+
+    res.status(201).json({
+      status: 201,
+      message: 'Successfully created a contact!',
+      data: contact,
+    });
+  } catch (error) {
+    console.error('Error creating contact:', error);
+    next(createHttpError(500, 'Internal Server Error'));
+  }
 };
 
 export const deleteContactController = async (req, res, next) => {
