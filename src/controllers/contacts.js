@@ -48,8 +48,8 @@ export const getContactByIdController = async (req, res, next) => {
 };
 
 export const createContactController = async (req, res, next) => {
-  const photo = req.file;  
-  const userId = req.user._id;
+  const photo = req.file;
+
 
   console.log('Received file:', photo);
 
@@ -122,38 +122,21 @@ export const patchContactController = async (req, res, next) => {
   const photo = req.file;
   const userId = req.user._id;
 
-  console.log('Received file:', photo);
-
   let photoUrl;
 
   if (photo) {
     if (env('ENABLE_CLOUDINARY') === 'true') {
-      try {
-        photoUrl = await saveFileToCloudinary(photo);
-        console.log('File saved to Cloudinary:', photoUrl);
-      } catch (error) {
-        console.error('Error saving file to Cloudinary:', error);
-        return next(createHttpError(500, 'Error saving file to Cloudinary'));
-      }
+      photoUrl = await saveFileToCloudinary(photo);
     } else {
-      try {
-        photoUrl = await saveFileToUploadDir(photo);
-        console.log('File saved to upload directory:', photoUrl);
-      } catch (error) {
-        console.error('Error saving file to upload directory:', error);
-        return next(createHttpError(500, 'Error saving file to upload directory'));
-      }
+      photoUrl = await saveFileToUploadDir(photo);
     }
-  } else {
-    console.log('No file received.');
   }
 
   const payload = {
     ...req.body,
-    ...(photoUrl && { photo: photoUrl }),
+    userId: req.user._id,
+    photo: photoUrl,
   };
-
-  console.log('Payload for update:', payload);
 
   try {
     const result = await updateContact(contactId, payload, userId);
