@@ -47,43 +47,9 @@ export const getContactByIdController = async (req, res, next) => {
   });
 };
 
-export const createContactController = async (req, res) => {
-  const payload = {
-    ...req.body,
-    userId: req.user._id,
-  };
-
-  const contact = await createContact(payload);
-
-  res.status(201).json({
-    status: 201,
-    message: `Successfully created a contact!`,
-    data: contact,
-  });
-};
-
-export const deleteContactController = async (req, res, next) => {
-  try {
-    const { contactId } = req.params;
-    console.log('Deleting contact by ID:', contactId);
-
-    const contact = await deleteContact(contactId);
-
-    if (!contact) {
-      return next(createHttpError(404, 'Contact not found'));
-    }
-
-    res.status(204).send();
-  } catch (error) {
-    console.error('Error in deleteContactController:', error);
-    next(error);
-  }
-};
-
-export const patchContactController = async (req, res, next) => {
-  const { contactId } = req.params;
+export const createContactController = async (req, res, next) => {
   const photo = req.file;
-  const userId = req.user._id;
+
 
   console.log('Received file:', photo);
 
@@ -113,10 +79,64 @@ export const patchContactController = async (req, res, next) => {
 
   const payload = {
     ...req.body,
+    userId: req.user._id,
     ...(photoUrl && { photo: photoUrl }),
   };
 
-  console.log('Payload for update:', payload);
+  console.log('Payload for creation:', payload);
+
+  try {
+    const contact = await createContact(payload);
+
+    res.status(201).json({
+      status: 201,
+      message: 'Successfully created a contact!',
+      data: contact,
+    });
+  } catch (error) {
+    console.error('Error creating contact:', error);
+    next(createHttpError(500, 'Internal Server Error'));
+  }
+};
+
+export const deleteContactController = async (req, res, next) => {
+  try {
+    const { contactId } = req.params;
+    console.log('Deleting contact by ID:', contactId);
+
+    const contact = await deleteContact(contactId);
+
+    if (!contact) {
+      return next(createHttpError(404, 'Contact not found'));
+    }
+
+    res.status(204).send();
+  } catch (error) {
+    console.error('Error in deleteContactController:', error);
+    next(error);
+  }
+};
+
+export const patchContactController = async (req, res, next) => {
+  const { contactId } = req.params;
+  const photo = req.file;
+  const userId = req.user._id;
+
+  let photoUrl;
+
+  if (photo) {
+    if (env('ENABLE_CLOUDINARY') === 'true') {
+      photoUrl = await saveFileToCloudinary(photo);
+    } else {
+      photoUrl = await saveFileToUploadDir(photo);
+    }
+  }
+
+  const payload = {
+    ...req.body,
+    userId: req.user._id,
+    photo: photoUrl,
+  };
 
   try {
     const result = await updateContact(contactId, payload, userId);

@@ -29,13 +29,15 @@ const contactsSchema = new Schema(
       ref: 'User',
       required: true,
     },
-    photo: { type: String },
+    photo: { type: String, required: false },
   },
-
   {
-    timestamps: true,
+    timestamps: {
+      createdAt: 'createdAt',
+      updatedAt: 'updatedAt',
+    },
     versionKey: false,
-  }
+  },
 );
 
 export const ContactsCollection = model('contacts', contactsSchema);
