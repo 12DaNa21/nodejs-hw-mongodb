@@ -1,4 +1,5 @@
 # swagger/paths/contacts/{id}/patch.yaml
+
 tags:
   - Contacts
 summary: Update a contact
@@ -13,10 +14,7 @@ parameters:
     schema:
       type: string
     description: ID of the contact to be updated.
-  - in: formData
-    name: photo
-    type: file
-    description: Photo of the contacts.
+
 requestBody:
   required: true
   content:
@@ -45,10 +43,6 @@ requestBody:
             enum: [work, home, personal]
             description: Type of the contact
             example: work
-          photo:
-            type: string
-            format: binary
-            description: Photo of the contact
 responses:
   '200':
     description: Successfully patched a contact!
@@ -69,6 +63,6 @@ responses:
               example: Successfully patched a contact!
             data:
               type: object
-              $ref: ..\..\..\components\schemas\contact.yaml
+              $ref: ../../../../components/schemas/contact.yaml
   '401':
-    $ref: ..\..\..\components\responses\401.yaml
+    $ref: ../../../../components/responses/401.yaml

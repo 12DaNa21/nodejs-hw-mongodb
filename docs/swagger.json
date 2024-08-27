@@ -14,7 +14,7 @@
       "url": "http://localhost:3000"
     },
     {
-      "url": "https://nodejs-hw-mongodb-1-i57y.onrender.com"
+      "url": "https://nodejs-hw-mongodb-kbh2.onrender.com"
     }
   ],
   "tags": [
@@ -341,13 +341,8 @@
               "type": "string"
             },
             "description": "ID of the contact to be updated."
-          },
-          {
-            "in": "formData",
-            "name": "photo",
-            "type": "file",
-            "description": "Photo of the contacts."
           }
+
         ],
         "requestBody": {
           "required": true,
@@ -385,12 +380,8 @@
                     ],
                     "description": "Type of the contact",
                     "example": "work"
-                  },
-                  "photo": {
-                    "type": "string",
-                    "format": "binary",
-                    "description": "Photo of the contact"
                   }
+
                 }
               }
             }
