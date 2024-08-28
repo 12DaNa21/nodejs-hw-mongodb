@@ -8,17 +8,17 @@ description: 'Create a contact with payload'
 security:
   - bearerAuth: []
 requestBody:
+  required: true
   content:
     multipart/form-data:
       schema:
         type: object
         required:
-          - _id
           - name
           - phoneNumber
-          - email
+
           - contactType
-          - userId
+
         properties:
           name:
             description: "Contact's name"
@@ -40,10 +40,7 @@ requestBody:
             description: 'Type of the contact'
             type: string
             enum: ['work', 'home', 'personal']
-          userId:
-            description: "User contact id"
-            type: string
-            example: 668072c79cb8a09c319bc657
+          
           photo:
             description: "Contact's photo"
             type: string
@@ -62,12 +59,12 @@ responses:
           properties:
             status:
               type: integer
-              example: 200
+              example: 201
             message:
               type: string
               example: Successfully created a contact!
             data:
               type: object
-              $ref: ..\..\components\schemas\contact.yaml
+              $ref: ../../components/schemas/contact.yaml
   '401':
     $ref: '../../components/responses/401.yaml'

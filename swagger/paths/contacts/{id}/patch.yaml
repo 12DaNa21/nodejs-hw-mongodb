@@ -13,10 +13,7 @@ parameters:
     schema:
       type: string
     description: ID of the contact to be updated.
-  - in: formData
-    name: photo
-    type: file
-    description: Photo of the contacts.
+
 requestBody:
   required: true
   content:

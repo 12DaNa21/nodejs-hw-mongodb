@@ -14,7 +14,7 @@
       "url": "http://localhost:3000"
     },
     {
-      "url": "https://nodejs-hw-mongodb-1-i57y.onrender.com"
+      "url": "https://nodejs-hw-mongodb-kbh2.onrender.com"
     }
   ],
   "tags": [
@@ -173,12 +173,12 @@
               "schema": {
                 "type": "object",
                 "required": [
-                  "_id",
+
                   "name",
                   "phoneNumber",
-                  "email",
-                  "contactType",
-                  "userId"
+
+                  "contactType"
+
                 ],
                 "properties": {
                   "name": {
@@ -210,11 +210,7 @@
                       "personal"
                     ]
                   },
-                  "userId": {
-                    "description": "User contact id",
-                    "type": "string",
-                    "example": "668072c79cb8a09c319bc657"
-                  },
+
                   "photo": {
                     "description": "Contact's photo",
                     "type": "string",
@@ -341,13 +337,8 @@
               "type": "string"
             },
             "description": "ID of the contact to be updated."
-          },
-          {
-            "in": "formData",
-            "name": "photo",
-            "type": "file",
-            "description": "Photo of the contacts."
           }
+
         ],
         "requestBody": {
           "required": true,
