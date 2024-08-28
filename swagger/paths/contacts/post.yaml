@@ -16,9 +16,9 @@ requestBody:
         required:
           - name
           - phoneNumber
-          - email
+
           - contactType
-          - userId
+
         properties:
           name:
             description: "Contact's name"
@@ -40,10 +40,7 @@ requestBody:
             description: 'Type of the contact'
             type: string
             enum: ['work', 'home', 'personal']
-          userId:
-            description: "User contact id"
-            type: string
-            example: 668072c79cb8a09c319bc657
+          
           photo:
             description: "Contact's photo"
             type: string
